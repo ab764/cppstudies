@@ -12,7 +12,7 @@ int main(const int argc, const char **argv)
   };
 
   {
-  ab764::FixedSizeArrayMemoryPool<S, 10> pool;
+  ab764::SimpleFixedSizeArrayMemoryPool<S, 10> pool;
 
   S* s = pool.alloc();
 
@@ -22,7 +22,7 @@ int main(const int argc, const char **argv)
   }
 
   {
-  ab764::FixedSizeArrayMemoryPool<S, 10> pool;
+  ab764::SimpleFixedSizeArrayMemoryPool<S, 10> pool;
 
   for (int i=0; i<11; ++i) {
     S* s = pool.alloc();
