@@ -5,7 +5,7 @@
 namespace ab764 {
 
 template <typename T, int SIZE>
-class FixedSizeArrayMemoryPool {
+class SimpleFixedSizeArrayMemoryPool {
 private:
 
   union Node {
@@ -17,7 +17,7 @@ private:
   Node*  storage_;
 
 public:
-  FixedSizeArrayMemoryPool() : freeListHead_(nullptr), storage_(nullptr) {
+  SimpleFixedSizeArrayMemoryPool() : freeListHead_(nullptr), storage_(nullptr) {
 
     storage_ = (Node*)::malloc(sizeof(T) * SIZE);
     Node* p = storage_;
@@ -29,7 +29,7 @@ public:
 
   }
 
-  ~FixedSizeArrayMemoryPool() { ::free(storage_); }
+  ~SimpleFixedSizeArrayMemoryPool() { ::free(storage_); }
 
   template <typename... Args> T* alloc(Args &&... args) {
     if (freeListHead_ == nullptr) return nullptr;
