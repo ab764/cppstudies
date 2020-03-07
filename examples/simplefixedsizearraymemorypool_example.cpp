@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "simplefixedsizearraypool.h"
+#include "simplefixedsizearraymemorypool.h"
 
 int main(const int argc, const char **argv)
 {
