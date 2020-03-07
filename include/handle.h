@@ -23,7 +23,7 @@ public:
 
   operator size_t() { return id_; }
 
-  static constexpr int bitSize() { return sizeof(T) << 3; } // assume 8-bit machine
+  static constexpr int bitSize() { return sizeof(T) << 3; } // assume byte is 8-bit
   static constexpr int indexBitSize() { return INDEXBITSIZE; }
   static constexpr T indexBitMask() { return ((T)1 << INDEXBITSIZE) - (T)1; }
   static constexpr int countBitSize() { return ((T)sizeof(T) << 3) - INDEXBITSIZE; }
