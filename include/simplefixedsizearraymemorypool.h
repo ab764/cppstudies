@@ -13,12 +13,13 @@ private:
     T      data_;
   };
 
-  Node*          freeListHead_;
-  unsigned char  storage_[SIZE * sizeof(T)];
+  Node*  freeListHead_;
+  Node*  storage_;
 
 public:
-  FixedSizeArrayMemoryPool() : freeListHead_(nullptr) {
+  FixedSizeArrayMemoryPool() : freeListHead_(nullptr), storage_(nullptr) {
 
+    storage_ = (Node*)::malloc(sizeof(T) * SIZE);
     Node* p = reinterpret_cast<Node*>(storage_);
     freeListHead_ = p;
     for (int i = 0; i < SIZE-1; ++i, ++p) {
@@ -28,21 +29,24 @@ public:
 
   }
 
-  ~FixedSizeArrayMemoryPool() {}
+  ~FixedSizeArrayMemoryPool() { ::free(storage_); }
 
   template <typename... Args> T* alloc(Args &&... args) {
     if (freeListHead_ == nullptr) return nullptr;
     T* p = reinterpret_cast<T*>(freeListHead_);
     freeListHead_ = freeListHead_->next_;
+
     new (p) T(std::forward<Args>(args)...);
     return p;
   }
 
   void free(T* p) {
-    p->T::~T();
-    Node* pnode = reinterpret_cast<Node*>(p);
-    pnode->next_ = freeListHead_;
-    freeListHead_ = pnode;
+    if (p!=nullptr) {
+      p->T::~T();
+      Node* pnode = reinterpret_cast<Node*>(p);
+      pnode->next_ = freeListHead_;
+      freeListHead_ = pnode;
+    }
   }
 };
 
