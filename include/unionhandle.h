@@ -28,7 +28,7 @@ union Handle {
   CountType count() const { return count_; }
   IndexType index() const { return index_; }
 
-  operator std::size_t() { return index_; }
+  operator std::size_t() { return id_; }
 
   void incrementCount() { ++count_; }
 };
