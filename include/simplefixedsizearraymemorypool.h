@@ -41,12 +41,10 @@ public:
   }
 
   void free(T* p) {
-    if (p!=nullptr) {
-      p->T::~T();
-      Node* pnode = reinterpret_cast<Node*>(p);
-      pnode->next_ = freeListHead_;
-      freeListHead_ = pnode;
-    }
+    p->T::~T();
+    Node* pnode = reinterpret_cast<Node*>(p);
+    pnode->next_ = freeListHead_;
+    freeListHead_ = pnode;
   }
 };
 
