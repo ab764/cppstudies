@@ -4,7 +4,12 @@
 
 int main(const int argc, const char **argv)
 {
-  struct S { int i; };
+  struct S {
+    int i;
+
+    S() { std::cout << __FUNCTION__ << std::endl;}
+    ~S() { std::cout << __FUNCTION__ << std::endl;}
+  };
 
   {
   ab764::FixedSizeArrayMemoryPool<S, 10> pool;
