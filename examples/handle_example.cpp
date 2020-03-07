@@ -5,7 +5,7 @@
 using namespace std;
 
 template <typename T, int INDEXBITSIZE>
-void printHandle(const char* label, const tdf::Handle<T, INDEXBITSIZE> h)
+void printHandle(const char* label, const ab764::Handle<T, INDEXBITSIZE> h)
 {
   cout << label
        << "[id=" << hex << (size_t)h.id() << dec
@@ -17,7 +17,7 @@ void printHandle(const char* label, const tdf::Handle<T, INDEXBITSIZE> h)
 template <typename T, int INDEXBITSIZE>
 void show_details(const string& text)
 {
-  using ID = tdf::Handle<T, INDEXBITSIZE>;
+  using ID = ab764::Handle<T, INDEXBITSIZE>;
 
   static_assert(sizeof(ID)==sizeof(typename ID::IDType), "Size mismatch");
 
