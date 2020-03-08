@@ -13,7 +13,8 @@ struct S {
 
 const int ALLOCCOUNT = 64 * 1024;
 S* arr[ALLOCCOUNT];
-const int PAGESIZE = 1024 * 16;
+const int PAGESIZEINKB = 64 * 1024;
+const int ELEMENTSPERPAGE = PAGESIZEINKB / sizeof(S);
 
 template <typename T>
 void memoryPoolTest(T& pool)
@@ -41,14 +42,14 @@ void testNoMemoryPool()
 
 void testFixedSizeElementMemoryPool()
 {
-  ab764::FixedSizeElementMemoryPool<S, PAGESIZE> pool;
-  memoryPoolTest<ab764::FixedSizeElementMemoryPool<S, PAGESIZE>>(pool);
+  ab764::FixedSizeElementMemoryPool<S, ELEMENTSPERPAGE> pool;
+  memoryPoolTest<ab764::FixedSizeElementMemoryPool<S, ELEMENTSPERPAGE>>(pool);
 }
 
 void testInelasticFixedSizeMemoryPool()
 {
-  ab764::InelasticFixedSizeMemoryPool<S, PAGESIZE> pool;
-  memoryPoolTest<ab764::InelasticFixedSizeMemoryPool<S, PAGESIZE>>(pool);
+  ab764::InelasticFixedSizeMemoryPool<S, ELEMENTSPERPAGE> pool;
+  memoryPoolTest<ab764::InelasticFixedSizeMemoryPool<S, ELEMENTSPERPAGE>>(pool);
 }
 
 void testSimpleFixedSizeArrayMemoryPool()
