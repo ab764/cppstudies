@@ -4,7 +4,7 @@
 
 namespace ab764 {
 
-template <typename T, int PAGESIZE>
+template <typename T, int PAGEARRAYSIZE>
 class InelasticFixedSizeMemoryPool {
 private:
 
@@ -18,9 +18,9 @@ private:
     Node* storage_;
 
     Page() : next_(nullptr), storage_(nullptr) {
-      storage_ = (Node*)::malloc(sizeof(Node) * PAGESIZE);
+      storage_ = (Node*)::malloc(sizeof(Node) * PAGEARRAYSIZE);
       Node* p = storage_;
-      for (int i = 0; i < PAGESIZE-1; ++i, ++p) {
+      for (int i = 0; i < PAGEARRAYSIZE-1; ++i, ++p) {
         p->next_ = (p+1); 
       }
       p->next_ = nullptr;

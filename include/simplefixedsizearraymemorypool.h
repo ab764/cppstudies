@@ -4,7 +4,7 @@
 
 namespace ab764 {
 
-template <typename T, int SIZE>
+template <typename T, int ARRAYSIZE>
 class SimpleFixedSizeArrayMemoryPool {
 private:
 
@@ -19,10 +19,10 @@ private:
 public:
   SimpleFixedSizeArrayMemoryPool() : freeListHead_(nullptr), storage_(nullptr) {
 
-    storage_ = (Node*)::malloc(sizeof(Node) * SIZE);
+    storage_ = (Node*)::malloc(sizeof(Node) * ARRAYSIZE);
     Node* p = storage_;
     freeListHead_ = p;
-    for (int i = 0; i < SIZE-1; ++i, ++p) {
+    for (int i = 0; i < ARRAYSIZE-1; ++i, ++p) {
       p->next_ = (p+1); 
     }
     p->next_ = nullptr;
