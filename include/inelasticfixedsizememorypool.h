@@ -18,7 +18,7 @@ private:
     Node* storage_;
 
     Page() : next_(nullptr), storage_(nullptr) {
-      storage_ = (Node*)::malloc(sizeof(T) * PAGESIZE);
+      storage_ = (Node*)::malloc(sizeof(Node) * PAGESIZE);
       Node* p = storage_;
       for (int i = 0; i < PAGESIZE-1; ++i, ++p) {
         p->next_ = (p+1); 
