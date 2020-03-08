@@ -11,18 +11,25 @@ struct S {
   char buff[64];
 };
 
-const int ALLOCCOUNT = 64 * 1024; // allocate max of 64k blocks per iteration
+// limit the total memory block size using this number
+const int TOTALDATASETINKB = (2048*1024);
+
+// allocate max of ALLOCCOUNT blocks per iteration
+const int ALLOCCOUNT = (TOTALDATASETINKB/sizeof(S));
 static S* arr[ALLOCCOUNT];
 
 // 64k pages except SimpleFixedSizeArrayMemoryPool which cannot expand
 const int PAGESIZEINKB = 64 * 1024;
 const int ELEMENTSPERPAGE = PAGESIZEINKB / sizeof(S);
 
+// total iterations needed to allocate 64M blocks total 
+const int ITERATIONS = (64 * 1024 * 1024) / ALLOCCOUNT;
+
 template <typename T>
 void memoryPoolTest(T& pool)
 {
   int count = 0;
-  for (int i = 0; i < 1024; ++i) { // 1k iterations
+  for (int i = 0; i < ITERATIONS; ++i) {
     for (int i=0; i<ALLOCCOUNT; ++i) {
       arr[i] = pool.alloc();
     }
