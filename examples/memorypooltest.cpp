@@ -19,7 +19,7 @@ const int ALLOCCOUNT = (TOTALDATASETINBYTES/sizeof(S));
 static S* arr[ALLOCCOUNT];
 
 // 64k pages except SimpleFixedSizeArrayMemoryPool which cannot expand
-const int PAGESIZEINBYTES = 64 * 1024;
+const int PAGESIZEINBYTES = 512 * 1024;
 const int ELEMENTSPERPAGE = PAGESIZEINBYTES / sizeof(S);
 
 // total iterations needed to allocate 64M blocks total
