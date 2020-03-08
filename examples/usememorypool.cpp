@@ -3,6 +3,7 @@
 #include "nomemorypool.h"
 #include "fixedsizeelementmemorypool.h"
 #include "inelasticfixedsizememorypool.h"
+#include "inelasticfixedsizememorypoolvector.h"
 #include "simplefixedsizearraymemorypool.h"
 
 namespace mempooltest {
@@ -33,7 +34,7 @@ void memoryPoolTest(T& pool, const int count)
     }
   }
 
-  std::cout << "Totall allocations/free: " << allocations << std::endl;
+  std::cout << "Total allocations/free: " << allocations << std::endl;
 }
 
 void testNoMemoryPool(const int count)
@@ -44,20 +45,30 @@ void testNoMemoryPool(const int count)
 
 void testFixedSizeElementMemoryPool(const int count)
 {
-  ab764::FixedSizeElementMemoryPool<S, ELEMENTSPERPAGE> pool;
-  memoryPoolTest<ab764::FixedSizeElementMemoryPool<S, ELEMENTSPERPAGE>>(pool, count);
+  using Pool = ab764::FixedSizeElementMemoryPool<S, ELEMENTSPERPAGE>;
+  Pool pool;
+  memoryPoolTest<Pool>(pool, count);
 }
 
 void testInelasticFixedSizeMemoryPool(const int count)
 {
-  ab764::InelasticFixedSizeMemoryPool<S, ELEMENTSPERPAGE> pool;
-  memoryPoolTest<ab764::InelasticFixedSizeMemoryPool<S, ELEMENTSPERPAGE>>(pool, count);
+  using Pool = ab764::InelasticFixedSizeMemoryPool<S, ELEMENTSPERPAGE>;
+  Pool pool;
+  memoryPoolTest<Pool>(pool, count);
+}
+
+void testInelasticFixedSizeMemoryPoolVector(const int count)
+{
+  using Pool = ab764::InelasticFixedSizeMemoryPoolVector<S, ELEMENTSPERPAGE>;
+  Pool pool;
+  memoryPoolTest<Pool>(pool, count);
 }
 
 void testSimpleFixedSizeArrayMemoryPool(const int count)
 {
-  ab764::SimpleFixedSizeArrayMemoryPool<S, ELEMENTSPERPAGE> pool;
-  memoryPoolTest<ab764::SimpleFixedSizeArrayMemoryPool<S, ELEMENTSPERPAGE>>(pool, count);
+  using Pool = ab764::SimpleFixedSizeArrayMemoryPool<S, ELEMENTSPERPAGE>;
+  Pool pool;
+  memoryPoolTest<Pool>(pool, count);
 }
 
 }
@@ -72,7 +83,8 @@ int main(const int argc, const char **argv)
   case 1: mempooltest::testNoMemoryPool(count); break;
   case 2: mempooltest::testFixedSizeElementMemoryPool(count); break;
   case 3: mempooltest::testInelasticFixedSizeMemoryPool(count); break;
-  case 4: mempooltest::testSimpleFixedSizeArrayMemoryPool(count); break;
+  case 4: mempooltest::testInelasticFixedSizeMemoryPoolVector(count); break;
+  case 5: mempooltest::testSimpleFixedSizeArrayMemoryPool(count); break;
   }
   std::cout << "finished" << std::endl;
 

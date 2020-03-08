@@ -3,6 +3,7 @@
 #include "nomemorypool.h"
 #include "fixedsizeelementmemorypool.h"
 #include "inelasticfixedsizememorypool.h"
+#include "inelasticfixedsizememorypoolvector.h"
 #include "simplefixedsizearraymemorypool.h"
 
 namespace mempooltest {
@@ -30,17 +31,17 @@ void memoryPoolTest(T& pool)
 {
   int count = 0;
   for (int i = 0; i < ITERATIONS; ++i) {
-    for (int i=0; i<ALLOCCOUNT; ++i) {
-      arr[i] = pool.alloc();
+    for (int j = 0; j < ALLOCCOUNT; ++j) {
+      arr[j] = pool.alloc();
     }
 
-    for (int i=0; i<ALLOCCOUNT; ++i) {
-      pool.free(arr[i]);
+    for (int j = 0; j < ALLOCCOUNT; ++j) {
+      pool.free(arr[j]);
     }
 
     count += ALLOCCOUNT;
   }
-  std::cout << "Totall allocations/free: " << count << std::endl;
+  std::cout << "Total allocations/free: " << count << std::endl;
 }
 
 void testNoMemoryPool()
@@ -51,20 +52,30 @@ void testNoMemoryPool()
 
 void testFixedSizeElementMemoryPool()
 {
-  ab764::FixedSizeElementMemoryPool<S, ELEMENTSPERPAGE> pool;
-  memoryPoolTest<ab764::FixedSizeElementMemoryPool<S, ELEMENTSPERPAGE>>(pool);
+  using Pool = ab764::FixedSizeElementMemoryPool<S, ELEMENTSPERPAGE>;
+  Pool pool;
+  memoryPoolTest<Pool>(pool);
 }
 
 void testInelasticFixedSizeMemoryPool()
 {
-  ab764::InelasticFixedSizeMemoryPool<S, ELEMENTSPERPAGE> pool;
-  memoryPoolTest<ab764::InelasticFixedSizeMemoryPool<S, ELEMENTSPERPAGE>>(pool);
+  using Pool = ab764::InelasticFixedSizeMemoryPool<S, ELEMENTSPERPAGE>;
+  Pool pool;
+  memoryPoolTest<Pool>(pool);
+}
+
+void testInelasticFixedSizeMemoryPoolVector()
+{
+  using Pool = ab764::InelasticFixedSizeMemoryPoolVector<S, ELEMENTSPERPAGE>;
+  Pool pool;
+  memoryPoolTest<Pool>(pool);
 }
 
 void testSimpleFixedSizeArrayMemoryPool()
 {
-  ab764::SimpleFixedSizeArrayMemoryPool<S, ALLOCCOUNT> pool;
-  memoryPoolTest<ab764::SimpleFixedSizeArrayMemoryPool<S, ALLOCCOUNT>>(pool);
+  using Pool = ab764::SimpleFixedSizeArrayMemoryPool<S, ALLOCCOUNT>;
+  Pool pool;
+  memoryPoolTest<Pool>(pool);
 }
 
 }
@@ -78,7 +89,8 @@ int main(const int argc, const char **argv)
   case 1: mempooltest::testNoMemoryPool(); break;
   case 2: mempooltest::testFixedSizeElementMemoryPool(); break;
   case 3: mempooltest::testInelasticFixedSizeMemoryPool(); break;
-  case 4: mempooltest::testSimpleFixedSizeArrayMemoryPool(); break;
+  case 4: mempooltest::testInelasticFixedSizeMemoryPoolVector(); break;
+  case 5: mempooltest::testSimpleFixedSizeArrayMemoryPool(); break;
   }
   std::cout << "finished" << std::endl;
 
