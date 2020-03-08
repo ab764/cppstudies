@@ -19,7 +19,7 @@ private:
 public:
   SimpleFixedSizeArrayMemoryPool() : freeListHead_(nullptr), storage_(nullptr) {
 
-    storage_ = (Node*)::malloc(sizeof(T) * SIZE);
+    storage_ = (Node*)::malloc(sizeof(Node) * SIZE);
     Node* p = storage_;
     freeListHead_ = p;
     for (int i = 0; i < SIZE-1; ++i, ++p) {
