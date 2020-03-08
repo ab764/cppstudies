@@ -12,17 +12,17 @@ struct S {
 };
 
 // limit the total memory block size using this number
-const int TOTALDATASETINKB = (2048*1024);
+const int TOTALDATASETINBYTES = (2048*1024);
 
 // allocate max of ALLOCCOUNT blocks per iteration
-const int ALLOCCOUNT = (TOTALDATASETINKB/sizeof(S));
+const int ALLOCCOUNT = (TOTALDATASETINBYTES/sizeof(S));
 static S* arr[ALLOCCOUNT];
 
 // 64k pages except SimpleFixedSizeArrayMemoryPool which cannot expand
-const int PAGESIZEINKB = 64 * 1024;
-const int ELEMENTSPERPAGE = PAGESIZEINKB / sizeof(S);
+const int PAGESIZEINBYTES = 64 * 1024;
+const int ELEMENTSPERPAGE = PAGESIZEINBYTES / sizeof(S);
 
-// total iterations needed to allocate 64M blocks total 
+// total iterations needed to allocate 64M blocks total
 const int ITERATIONS = (64 * 1024 * 1024) / ALLOCCOUNT;
 
 template <typename T>
