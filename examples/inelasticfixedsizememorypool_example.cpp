@@ -11,7 +11,6 @@ int main(const int argc, const char **argv)
     ~S() { std::cout << __FUNCTION__ << " " << this << std::endl;}
   };
 
-  {
   ab764::InelasticFixedSizeMemoryPool<S, 10> pool;
 
   S* s = pool.alloc();
@@ -19,16 +18,17 @@ int main(const int argc, const char **argv)
   s->i = 1;
 
   pool.free(s);
+
+  const int size = ::atoi(argv[1]);
+  S* arr[size];
+  for (int i=0; i<size; ++i) {
+    arr[i] = pool.alloc();
   }
 
-  {
-  ab764::InelasticFixedSizeMemoryPool<S, 5> pool;
-
-  for (int i=0; i<11; ++i) {
-    S* s = pool.alloc();
+  for (int i=0; i<size; ++i) {
+    pool.free(arr[i]);
   }
-  }
-
+  
   std::cout << "finished" << std::endl;
 
   return 0;
