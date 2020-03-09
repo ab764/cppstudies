@@ -46,7 +46,7 @@ public:
     return p;
   }
 
-  Node* find(const HandleType handle) {
+  Node* find(const HandleType handle) const {
     Node* p = storage_ + handle.index();
     return (p->handle_ == handle) ? p : nullptr;
   }
