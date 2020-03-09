@@ -21,6 +21,7 @@ public:
   T count() const { return id_ >> INDEXBITSIZE; }
   T index() const { return id_ & (((T)1 << INDEXBITSIZE) - (T)1); }
 
+  bool operator==(const Handle& other) const { return id_==other.id_; }
   operator size_t() { return id_; }
 
   static constexpr int bitSize() { return sizeof(T) << 3; } // assume byte is 8-bit
@@ -28,6 +29,7 @@ public:
   static constexpr T indexBitMask() { return ((T)1 << INDEXBITSIZE) - (T)1; }
   static constexpr int countBitSize() { return ((T)sizeof(T) << 3) - INDEXBITSIZE; }
 
+  static constexpr size_t indexSize() { return (T)1 << INDEXBITSIZE; }
   static constexpr T maxIndex() { return ((T)1 << INDEXBITSIZE) - (T)1; }
   static constexpr T maxCount() { return ((T)1 << countBitSize()) - (T)1; }
 
