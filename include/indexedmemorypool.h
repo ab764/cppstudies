@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <cstdint>
+#include <new>
 #include "handle.h"
 
 namespace ab764 {
@@ -37,13 +38,20 @@ public:
 
   ~IndexedMemoryPool() { if(storage_) ::free(storage_); }
 
-  template <typename... Args> Node* alloc(Args &&... args) {
-    if (freeListHead_ == nullptr) return nullptr;
-    Node* p = freeListHead_;
-    freeListHead_ = freeListHead_->next_;
+  Node* getFreeNode() {
+    if (Node* p = freeListHead_) {
+      freeListHead_ = freeListHead_->next_;
+      return p;
+    }
+    return nullptr;
+  }
 
-    new (&p->data_) P(std::forward<Args>(args)...);
-    return p;
+  template <typename... Args> Node* alloc(Args&&... args) {
+    if (Node* p = getFreeNode()) {
+      new (&p->data_) P(std::forward<Args>(args)...);
+      return p;
+    }
+    return nullptr;
   }
 
   Node* find(const HandleType handle) const {
