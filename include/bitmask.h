@@ -34,8 +34,7 @@ struct bitmask {
       if (flags != ~0) {
         uint64_t bit = MSB64;
         for (size_t j = 0; j < BITSPERELEMENT; ++j) {
-          bit >>= 1;
-          if (!(flags & bit)) return (i << SHIFTBITS) + j;
+          if (!(flags & (bit >>= 1)) return (i << SHIFTBITS) + j;
         }
       }
     }
