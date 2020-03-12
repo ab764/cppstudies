@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 
-namespace ab1764 {
+namespace ab764 {
 
 template <int S>
 struct mybitset {
