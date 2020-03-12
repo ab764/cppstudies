@@ -11,7 +11,7 @@ struct mybitset {
   static const uint64_t SIZE = S;
   static const uint64_t SHIFTBITS = 6;
   static const uint64_t BITSPERELEMENT = 64;
-  static const uint64_t ARRAYSIZE = ((SIZE+15) >> SHIFTBITS);
+  static const uint64_t ARRAYSIZE = ((SIZE+63) >> SHIFTBITS);
   static const uint64_t LASTBIT = (SIZE-1);
   static const uint64_t MSB64 = 0x8000000000000000;
 
