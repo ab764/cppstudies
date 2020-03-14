@@ -21,7 +21,7 @@ const int ALLOCCOUNT = (TOTALDATASETINBYTES/sizeof(S));
 static S* arr[ALLOCCOUNT];
 
 // 64k pages except SimpleFixedSizeArrayMemoryPool which cannot expand
-const int PAGESIZEINBYTES = 512 * 1024;
+const int PAGESIZEINBYTES = 64 * 1024;
 const int ELEMENTSPERPAGE = PAGESIZEINBYTES / sizeof(S);
 
 // total iterations needed to allocate 64M blocks total
@@ -36,13 +36,13 @@ void memoryPoolTest(T& pool)
   for (int i = 0; i < ITERATIONS; ++i) {
     for (int j = 0; j < ALLOCCOUNT; ++j) {
       arr[j] = pool.alloc();
+      ++count;
     }
 
     for (int j = 0; j < ALLOCCOUNT; ++j) {
       pool.free(arr[j]);
     }
 
-    count += ALLOCCOUNT;
   }
   std::cout << "Total allocations/free: " << count << std::endl;
 }
@@ -103,13 +103,13 @@ void testIndexedMemoryPool()
   for (int i = 0; i < ITERATIONS; ++i) {
     for (int j = 0; j < pool.SIZE; ++j) {
       handles[j] = pool.alloc()->handle_;
+      ++count;
     }
 
     for (int j = 0; j < pool.SIZE; ++j) {
       pool.free(handles[j]);
     }
 
-    count += ALLOCCOUNT;
   }
   std::cout << "Total allocations/free: " << count << std::endl;
 }
