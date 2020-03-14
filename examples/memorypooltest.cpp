@@ -3,6 +3,7 @@
 #include "nomemorypool.h"
 #include "fixedsizeelementmemorypool.h"
 #include "indexedmemorypool.h"
+#include "indexedmemorypoolwithbitset.h"
 #include "inelasticfixedsizememorypool.h"
 #include "inelasticfixedsizememorypoolvector.h"
 #include "simplefixedsizearraymemorypool.h"
@@ -86,19 +87,14 @@ void testSimpleFixedSizeArrayMemoryPool()
   memoryPoolTest<Pool>(pool);
 }
 
-void testIndexedMemoryPool()
+template <typename T>
+void testIndexedMemoryPool(T& pool)
 {
-  std::cout << __FUNCTION__ << " start" << std::endl;
-  using Handle = ab764::Handle<uint32_t, 17>; // need 17 bits for 0..128k
-  using Pool = ab764::IndexedMemoryPool<Handle, S, ALLOCCOUNT>;
-
-  Pool pool;
-
   std::cout << "pool.SIZE: " << pool.SIZE << std::endl;
   std::cout << "ITERATIONS: " << ITERATIONS << std::endl;
   std::cout << "ALLOCCOUNT: " << ALLOCCOUNT << std::endl;
 
-  Handle handles[ALLOCCOUNT];
+  typename T::HandleType handles[ALLOCCOUNT];
   int count = 0;
   for (int i = 0; i < ITERATIONS; ++i) {
     for (int j = 0; j < pool.SIZE; ++j) {
@@ -114,6 +110,24 @@ void testIndexedMemoryPool()
   std::cout << "Total allocations/free: " << count << std::endl;
 }
 
+void testIndexedMemoryPoolFreeList()
+{
+  std::cout << __FUNCTION__ << " start" << std::endl;
+  using Handle = ab764::Handle<uint32_t, 17>; // need 17 bits for 0..128k
+  using Pool = ab764::IndexedMemoryPool<Handle, S, ALLOCCOUNT>;
+  Pool pool;
+  testIndexedMemoryPool<Pool>(pool);
+}
+
+void testIndexedMemoryPoolBitset()
+{
+  std::cout << __FUNCTION__ << " start" << std::endl;
+  using Handle = ab764::Handle<uint32_t, 17>; // need 17 bits for 0..128k
+  using Pool = ab764::IndexedMemoryPoolWithBitset<Handle, S, ALLOCCOUNT>;
+  Pool pool;
+  testIndexedMemoryPool<Pool>(pool);
+}
+
 }
 
 int main(const int argc, const char **argv)
@@ -124,10 +138,11 @@ int main(const int argc, const char **argv)
   switch (which) {
   case 1: mempooltest::testNoMemoryPool(); break;
   case 2: mempooltest::testFixedSizeElementMemoryPool(); break;
-  case 3: mempooltest::testIndexedMemoryPool(); break;
-  case 4: mempooltest::testInelasticFixedSizeMemoryPool(); break;
-  case 5: mempooltest::testInelasticFixedSizeMemoryPoolVector(); break;
-  case 6: mempooltest::testSimpleFixedSizeArrayMemoryPool(); break;
+  case 3: mempooltest::testIndexedMemoryPoolFreeList(); break;
+  case 4: mempooltest::testIndexedMemoryPoolBitset(); break;
+  case 5: mempooltest::testInelasticFixedSizeMemoryPool(); break;
+  case 6: mempooltest::testInelasticFixedSizeMemoryPoolVector(); break;
+  case 7: mempooltest::testSimpleFixedSizeArrayMemoryPool(); break;
   }
   std::cout << "finished" << std::endl;
 

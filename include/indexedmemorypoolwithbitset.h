@@ -1,0 +1,86 @@
+#pragma once
+
+#include <cstdlib>
+#include <cstdint>
+#include <new>
+#include "handle.h"
+#include "bitmask.h"
+
+namespace ab764 {
+
+template <typename H, typename P, int S>
+class IndexedMemoryPoolWithBitset {
+public:
+  
+  using HandleType = H;
+  using PayloadType = P;
+
+  struct Node {
+    HandleType handle_;
+    union {
+      Node* next_;
+      P     data_;
+    };
+  };
+
+  static const size_t SIZE = S;
+
+  IndexedMemoryPoolWithBitset() : storage_(nullptr) {
+
+    static_assert(SIZE > 0 && SIZE<=HandleType::indexSize());
+
+    storage_ = (Node*)::malloc(SIZE * sizeof(Node));
+
+    Node* p = storage_;
+    for (typename HandleType::IDType i = 0; i < SIZE; ++i, ++p) {
+      p->handle_.set(0, i);
+      p->next_ = (p+1);
+    }
+    p->next_ = nullptr;
+  }
+
+  ~IndexedMemoryPoolWithBitset() { if(storage_) ::free(storage_); }
+
+  Node* getFreeNode() {
+    auto i = freeNodeBitset_.findAndSetFirstClearBit();
+    if (i < SIZE) {
+      Node* p = storage_ + i;
+      assert(p->handle_.index() == i);
+      return p;
+    }
+    return nullptr;
+  }
+
+  template <typename... Args> Node* alloc(Args&&... args) {
+    if (Node* p = getFreeNode()) {
+      new (&p->data_) P(std::forward<Args>(args)...);
+      return p;
+    }
+    return nullptr;
+  }
+
+  Node* find(const HandleType handle) const {
+    Node* p = storage_ + handle.index();
+    return (p->handle_ == handle) ? p : nullptr;
+  }
+
+  void free(const HandleType handle) {
+    Node* p = storage_ + handle.index();
+
+    assert(p->handle_ == handle);
+
+    p->data_.P::~P();
+
+    p->handle_.incrementCount();
+    freeNodeBitset_.clear(handle.index());
+  }
+
+private:
+
+  Node*           storage_;
+  mybitset<SIZE>  freeNodeBitset_;
+
+};
+
+}
+

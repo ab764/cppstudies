@@ -43,6 +43,23 @@ struct mybitset {
     }
     return LASTBIT+1; // bit after last
   }
+
+  size_t findAndSetFirstClearBit() {
+    const auto end = flags_ + ARRAYSIZE;
+    for (uint64_t* flags = flags_; flags < end; ++flags) {
+      if (*flags != ~0) {
+        uint64_t bit = MSB64;
+        for (size_t j = 0; j < BITSPERELEMENT; ++j) {
+          if (!(*flags & bit)) {
+            *flags |= bit;
+            return ((flags - flags_) << SHIFTBITS) + j;
+          }
+          bit >>= 1;
+        }
+      }
+    }
+    return LASTBIT+1; // bit after last
+  }
 };
 
 }
