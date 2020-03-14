@@ -7,7 +7,7 @@
 
 namespace ab764 {
 
-template <typename H, typename P>
+template <typename H, typename P, int S>
 class IndexedMemoryPool {
 public:
   
@@ -22,18 +22,21 @@ public:
     };
   };
 
+  static const size_t SIZE = S;
+
   IndexedMemoryPool() : freeListHead_(nullptr), storage_(nullptr) {
 
-    storage_ = (Node*)::malloc(sizeof(H::indexSize() * sizeof(Node)));
+    static_assert(SIZE > 0 && SIZE<=HandleType::indexSize());
+
+    storage_ = (Node*)::malloc(SIZE * sizeof(Node));
 
     Node* p = storage_;
     freeListHead_ = p;
-    for (typename HandleType::IDType i = 0; i < H::indexSize()-1; ++i, ++p) {
+    for (typename HandleType::IDType i = 0; i < SIZE; ++i, ++p) {
       p->handle_.set(0, i);
-      p->next_ = (p+1); 
+      p->next_ = (p+1);
     }
     p->next_ = nullptr;
-
   }
 
   ~IndexedMemoryPool() { if(storage_) ::free(storage_); }
