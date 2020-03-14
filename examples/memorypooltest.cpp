@@ -2,6 +2,7 @@
 
 #include "nomemorypool.h"
 #include "fixedsizeelementmemorypool.h"
+#include "indexedmemorypool.h"
 #include "inelasticfixedsizememorypool.h"
 #include "inelasticfixedsizememorypoolvector.h"
 #include "simplefixedsizearraymemorypool.h"
@@ -29,6 +30,8 @@ const int ITERATIONS = (64 * 1024 * 1024) / ALLOCCOUNT;
 template <typename T>
 void memoryPoolTest(T& pool)
 {
+  std::cout << "ITERATIONS: " << ITERATIONS << std::endl;
+  std::cout << "ALLOCCOUNT: " << ALLOCCOUNT << std::endl;
   int count = 0;
   for (int i = 0; i < ITERATIONS; ++i) {
     for (int j = 0; j < ALLOCCOUNT; ++j) {
@@ -46,12 +49,14 @@ void memoryPoolTest(T& pool)
 
 void testNoMemoryPool()
 {
+  std::cout << __FUNCTION__ << " start" << std::endl;
   ab764::NoMemoryPool<S> pool;
   memoryPoolTest<ab764::NoMemoryPool<S>>(pool);
 }
 
 void testFixedSizeElementMemoryPool()
 {
+  std::cout << __FUNCTION__ << " start" << std::endl;
   using Pool = ab764::FixedSizeElementMemoryPool<S, ELEMENTSPERPAGE>;
   Pool pool;
   memoryPoolTest<Pool>(pool);
@@ -59,6 +64,7 @@ void testFixedSizeElementMemoryPool()
 
 void testInelasticFixedSizeMemoryPool()
 {
+  std::cout << __FUNCTION__ << " start" << std::endl;
   using Pool = ab764::InelasticFixedSizeMemoryPool<S, ELEMENTSPERPAGE>;
   Pool pool;
   memoryPoolTest<Pool>(pool);
@@ -66,6 +72,7 @@ void testInelasticFixedSizeMemoryPool()
 
 void testInelasticFixedSizeMemoryPoolVector()
 {
+  std::cout << __FUNCTION__ << " start" << std::endl;
   using Pool = ab764::InelasticFixedSizeMemoryPoolVector<S, ELEMENTSPERPAGE>;
   Pool pool;
   memoryPoolTest<Pool>(pool);
@@ -73,9 +80,38 @@ void testInelasticFixedSizeMemoryPoolVector()
 
 void testSimpleFixedSizeArrayMemoryPool()
 {
+  std::cout << __FUNCTION__ << " start" << std::endl;
   using Pool = ab764::SimpleFixedSizeArrayMemoryPool<S, ALLOCCOUNT>;
   Pool pool;
   memoryPoolTest<Pool>(pool);
+}
+
+void testIndexedMemoryPool()
+{
+  std::cout << __FUNCTION__ << " start" << std::endl;
+  using Handle = ab764::Handle<uint32_t, 17>; // need 17 bits for 0..128k
+  using Pool = ab764::IndexedMemoryPool<Handle, S, ALLOCCOUNT>;
+
+  Pool pool;
+
+  std::cout << "pool.SIZE: " << pool.SIZE << std::endl;
+  std::cout << "ITERATIONS: " << ITERATIONS << std::endl;
+  std::cout << "ALLOCCOUNT: " << ALLOCCOUNT << std::endl;
+
+  Handle handles[ALLOCCOUNT];
+  int count = 0;
+  for (int i = 0; i < ITERATIONS; ++i) {
+    for (int j = 0; j < pool.SIZE; ++j) {
+      handles[j] = pool.alloc()->handle_;
+    }
+
+    for (int j = 0; j < pool.SIZE; ++j) {
+      pool.free(handles[j]);
+    }
+
+    count += ALLOCCOUNT;
+  }
+  std::cout << "Total allocations/free: " << count << std::endl;
 }
 
 }
@@ -88,9 +124,10 @@ int main(const int argc, const char **argv)
   switch (which) {
   case 1: mempooltest::testNoMemoryPool(); break;
   case 2: mempooltest::testFixedSizeElementMemoryPool(); break;
-  case 3: mempooltest::testInelasticFixedSizeMemoryPool(); break;
-  case 4: mempooltest::testInelasticFixedSizeMemoryPoolVector(); break;
-  case 5: mempooltest::testSimpleFixedSizeArrayMemoryPool(); break;
+  case 3: mempooltest::testIndexedMemoryPool(); break;
+  case 4: mempooltest::testInelasticFixedSizeMemoryPool(); break;
+  case 5: mempooltest::testInelasticFixedSizeMemoryPoolVector(); break;
+  case 6: mempooltest::testSimpleFixedSizeArrayMemoryPool(); break;
   }
   std::cout << "finished" << std::endl;
 
