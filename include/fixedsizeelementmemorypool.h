@@ -45,8 +45,13 @@ private:
 
       if (pnode < storage_ || pnode > (storage_ + PAGEARRAYSIZE)) return false;
 
+      // destruct the data part
       p->T::~T();
-      pnode->next_ = freeListHead_;
+      
+      // push node at the top of the free list
+      pnode->next_  = freeListHead_;
+      freeListHead_ = pnode;
+      
       return true;
     }
 
